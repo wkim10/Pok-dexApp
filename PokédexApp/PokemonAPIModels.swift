@@ -34,6 +34,9 @@ struct PokemonDetail: Decodable {
     let id: Int
     let name: String
     let types: [PokemonTypeEntry]
+    let height: Int
+    let weight: Int
+    let stats: [PokemonStat]
 }
 
 struct PokemonTypeEntry: Decodable {
@@ -41,5 +44,29 @@ struct PokemonTypeEntry: Decodable {
 }
 
 struct PokemonType: Decodable {
+    let name: String
+}
+
+struct PokemonStat: Decodable {
+    let base_stat: Int
+    let stat: StatInfo
+}
+
+struct StatInfo: Decodable {
+    let name: String
+}
+
+// MARK: - Species API
+
+struct PokemonSpecies: Decodable {
+    let flavor_text_entries: [FlavorTextEntry]
+}
+
+struct FlavorTextEntry: Decodable {
+    let flavor_text: String
+    let language: Language
+}
+
+struct Language: Decodable {
     let name: String
 }
