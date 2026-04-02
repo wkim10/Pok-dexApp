@@ -11,6 +11,7 @@ import Combine
 @MainActor
 class PokemonViewModel: ObservableObject {
     @Published var pokemon: [PokemonResult] = []
+    @Published var allPokemon: [PokemonResult] = []
     private var offset = 0
     private let limit = 50
     
@@ -23,6 +24,20 @@ class PokemonViewModel: ObservableObject {
                     DispatchQueue.main.async {
                         self.pokemon.append(contentsOf: decoded.results)
                         self.offset += self.limit
+                    }
+                }
+            }
+        }.resume()
+    }
+    
+    func fetchAllPokemon() {
+        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon?limit=10000") else { return }
+        
+        URLSession.shared.dataTask(with: url) { data, _, _ in
+            if let data = data {
+                if let decoded = try? JSONDecoder().decode(PokemonListResponse.self, from: data) {
+                    DispatchQueue.main.async {
+                        self.allPokemon = decoded.results
                     }
                 }
             }
