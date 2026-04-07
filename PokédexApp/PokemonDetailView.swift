@@ -45,7 +45,7 @@ struct PokemonDetailView: View {
                         Text(entry.type.name.capitalized)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
-                            .background(colorForType(entry.type.name).opacity(0.2))
+                            .background(entry.type.name.typeColor().opacity(0.2))
                             .cornerRadius(10)
                     }
                 }
@@ -90,7 +90,7 @@ struct PokemonDetailView: View {
                     Text("Stats")
                         .font(.headline)
                     
-                    let primaryTypeColor = details.types.first.map { colorForType($0.type.name) } ?? Color.gray
+                    let primaryTypeColor = details.types.first?.type.name.typeColor() ?? .gray
                     
                     ForEach(details.stats, id: \.stat.name) { stat in
                         HStack {
@@ -154,29 +154,5 @@ struct PokemonDetailView: View {
                 }
             }
         }.resume()
-    }
-    
-    func colorForType(_ type: String) -> Color {
-        switch type.lowercased() {
-        case "normal": return Color.gray
-        case "fire": return Color.red
-        case "water": return Color.blue
-        case "grass": return Color.green
-        case "electric": return Color.yellow
-        case "ice": return Color.cyan
-        case "fighting": return Color.orange
-        case "poison": return Color.purple
-        case "ground": return Color.brown
-        case "flying": return Color.indigo
-        case "psychic": return Color.pink
-        case "bug": return Color.green.opacity(0.7)
-        case "rock": return Color.gray.opacity(0.7)
-        case "ghost": return Color.purple.opacity(0.7)
-        case "dragon": return Color.indigo.opacity(0.8)
-        case "dark": return Color.black
-        case "steel": return Color.gray.opacity(0.5)
-        case "fairy": return Color.pink.opacity(0.5)
-        default: return Color.gray
-        }
     }
 }

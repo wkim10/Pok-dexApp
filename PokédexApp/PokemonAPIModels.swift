@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 // MARK: - List API
 
@@ -69,4 +70,32 @@ struct FlavorTextEntry: Decodable {
 
 struct Language: Decodable {
     let name: String
+}
+
+// MARK: - Type Styling
+
+extension String {
+    func typeColor() -> Color {
+        switch self.lowercased() {
+        case "normal": return .gray
+        case "fire": return .red
+        case "water": return .blue
+        case "grass": return .green
+        case "electric": return .yellow
+        case "ice": return .cyan
+        case "fighting": return .orange
+        case "poison": return .purple
+        case "ground": return .brown
+        case "flying": return .indigo
+        case "psychic": return .pink
+        case "bug": return .green.opacity(0.7)
+        case "rock": return .gray.opacity(0.7)
+        case "ghost": return .purple.opacity(0.7)
+        case "dragon": return .indigo.opacity(0.8)
+        case "dark": return .black
+        case "steel": return .gray.opacity(0.5)
+        case "fairy": return .pink.opacity(0.5)
+        default: return .gray
+        }
+    }
 }

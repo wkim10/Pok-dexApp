@@ -27,7 +27,10 @@ struct ContentView: View {
             List {
                 ForEach(filteredPokemon, id: \.name) { pokemon in
                     ZStack {
-                        PokemonRowView(pokemon: pokemon)
+                        PokemonRowView(pokemon: pokemon, types: viewModel.pokemonTypes[pokemon.id])
+                            .onAppear {
+                                viewModel.fetchTypes(for: pokemon.id)
+                            }
                         
                         NavigationLink(destination: PokemonDetailView(pokemon: pokemon)) {
                             EmptyView()
@@ -36,6 +39,7 @@ struct ContentView: View {
                     }
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets(top: 4, leading: 12, bottom: 4, trailing: 12))
                     .onAppear {
                         if searchText.isEmpty && pokemon == viewModel.pokemon.last {
                             viewModel.fetchPokemon()

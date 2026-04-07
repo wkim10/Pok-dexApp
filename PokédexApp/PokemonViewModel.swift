@@ -12,6 +12,7 @@ import Combine
 class PokemonViewModel: ObservableObject {
     @Published var pokemon: [PokemonResult] = []
     @Published var allPokemon: [PokemonResult] = []
+    @Published var pokemonTypes: [Int: [String]] = [:]
     private var offset = 0
     private let limit = 50
     
@@ -42,5 +43,24 @@ class PokemonViewModel: ObservableObject {
                 }
             }
         }.resume()
+    }
+    
+    func fetchTypes(for id: Int) {
+        if pokemonTypes[id] != nil { return }
+        
+        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon/\(id)") else { return }
+        
+        URLSession.shared.dataTask(with: url) { data, _, _ in
+            if let data = data {
+                if let decoded = try? JSONDecoder().decode(PokemonDetail.self, from: data) {
+                    let types = decoded.types.map { $0.type.name }
+                    
+                    DispatchQueue.main.async {
+                        self.pokemonTypes[id] = types
+                    }
+                }
+            }
+        }
+        .resume()
     }
 }
