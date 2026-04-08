@@ -89,7 +89,7 @@ extension String {
         case "flying": return .indigo
         case "psychic": return .pink
         case "bug": return .green.opacity(0.7)
-        case "rock": return .gray.opacity(0.7)
+        case "rock": return Color(red: 0.73, green: 0.67, blue: 0.40)
         case "ghost": return .purple.opacity(0.7)
         case "dragon": return .indigo.opacity(0.8)
         case "dark": return .black

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct PokemonRowView: View {
     let pokemon: PokemonResult
@@ -33,33 +34,23 @@ struct PokemonRowView: View {
         HStack(spacing: 15) {
             
             // Image
-            AsyncImage(url: URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/\(pokemon.id).png")) { phase in
-                switch phase {
-                case .empty:
-                    ProgressView()
-                case .success(let image):
-                    image
-                        .resizable()
-                        .scaledToFit()
-                case .failure(_):
-                    Image(systemName: "xmark.octagon")
-                @unknown default:
-                    EmptyView()
-                }
-            }
-            .frame(width: 70, height: 70)
-            .background(
-                LinearGradient(
-                    colors: gradientColors,
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(types?.first?.typeColor().opacity(0.3) ?? .clear, lineWidth: 1)
-            )
-            .clipShape(RoundedRectangle(cornerRadius: 10))
+            KFImage(URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/\(pokemon.id).png"))
+               .resizable()
+               .placeholder {
+                   ProgressView()
+                       .frame(width: 70, height: 70)
+               }
+               .cancelOnDisappear(true)
+               .scaledToFit()
+               .frame(width: 70, height: 70)
+               .background(
+                   LinearGradient(
+                       colors: typeGradientColors(),
+                       startPoint: .top,
+                       endPoint: .bottom
+                   )
+               )
+               .clipShape(RoundedRectangle(cornerRadius: 10))
             
             // Name + ID + Types
             VStack(alignment: .leading, spacing: 6) {
@@ -90,5 +81,17 @@ struct PokemonRowView: View {
         .background(Color.white)
         .cornerRadius(16)
         .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
+    }
+    
+    // Returns gradient colors based on types
+    func typeGradientColors() -> [Color] {
+        guard let types = types else {
+            return [Color.white, Color(.systemGray6)]
+        }
+
+        let primaryColor = types.first?.typeColor() ?? Color.white
+        let secondaryColor = types.dropFirst().first?.typeColor() ?? primaryColor
+
+        return [primaryColor.opacity(0.3), secondaryColor.opacity(0.3)]
     }
 }

@@ -16,7 +16,7 @@ struct PokemonDetailView: View {
     var body: some View {
         VStack(spacing: 20) {
             
-            AsyncImage(url: URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/\(pokemon.id).png")) { phase in
+            AsyncImage(url: URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/\(pokemon.id).png")) { phase in
                 switch phase {
                 case.empty:
                     ProgressView()
