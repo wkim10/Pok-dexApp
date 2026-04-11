@@ -13,19 +13,27 @@ class PokemonViewModel: ObservableObject {
     @Published var pokemon: [PokemonResult] = []
     @Published var allPokemon: [PokemonResult] = []
     @Published var pokemonTypes: [Int: [String]] = [:]
+    @Published var isLoading = false
     private var offset = 0
     private let limit = 50
     
     func fetchPokemon() {
-        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon?offset=\(offset)&limit=\(limit)") else { return }
+        guard !isLoading else { return }
+        isLoading = true
+        
+        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon?offset=\(offset)&limit=\(limit)") else {
+            isLoading = false
+            return
+        }
         
         URLSession.shared.dataTask(with: url) { data, _, _ in
-            if let data = data {
-                if let decoded = try? JSONDecoder().decode(PokemonListResponse.self, from: data) {
-                    DispatchQueue.main.async {
-                        self.pokemon.append(contentsOf: decoded.results)
-                        self.offset += self.limit
-                    }
+            defer { DispatchQueue.main.async { self.isLoading = false } }
+            
+            if let data = data,
+               let decoded = try? JSONDecoder().decode(PokemonListResponse.self, from: data) {
+                DispatchQueue.main.async {
+                    self.pokemon.append(contentsOf: decoded.results)
+                    self.offset += self.limit
                 }
             }
         }.resume()
