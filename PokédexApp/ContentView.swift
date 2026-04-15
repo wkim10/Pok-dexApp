@@ -15,13 +15,19 @@ struct ContentView: View {
         case 6: return 650...721
         case 7: return 722...809
         case 8: return 810...905
-        case 9: return 906...1010
-        default: return 1...1010
+        case 9:
+            let maxID = viewModel.allPokemon.map { $0.id }.max() ?? 1025
+            return 906...maxID
+        default:
+            let maxID = viewModel.allPokemon.map { $0.id }.max() ?? 1025
+            return 1...1010
         }
     }
 
     var filteredPokemon: [PokemonResult] {
         var results = viewModel.allPokemon
+        
+        results = results.filter { $0.id <= 1025 }
 
         if !searchText.isEmpty {
             results = results.filter {
