@@ -26,13 +26,13 @@ struct ContentView: View {
 
     var filteredPokemon: [PokemonResult] {
         var results = viewModel.allPokemon
-        
+
         results = results.filter { $0.id <= 1025 }
 
         if !searchText.isEmpty {
             results = results.filter {
-                $0.name.localizedCaseInsensitiveContains(searchText) ||
-                "\($0.id)".contains(searchText)
+                $0.name.localizedCaseInsensitiveContains(searchText)
+                    || "\($0.id)".contains(searchText)
             }
         }
 
@@ -54,8 +54,8 @@ struct ContentView: View {
                 .padding(.vertical, 6)
                 .background(
                     selectedGeneration == generation
-                    ? Color.blue.opacity(0.25)
-                    : Color(.systemGray6)
+                        ? Color.blue.opacity(0.25)
+                        : Color(.systemGray6)
                 )
                 .foregroundColor(
                     selectedGeneration == generation ? .blue : .primary
@@ -91,10 +91,16 @@ struct ContentView: View {
                                 .id("top")
 
                             ForEach(filteredPokemon, id: \.name) { pokemon in
-                                NavigationLink(destination: PokemonDetailView(pokemon: pokemon)) {
+                                NavigationLink(
+                                    destination: PokemonDetailView(
+                                        pokemon: pokemon
+                                    )
+                                ) {
                                     PokemonRowView(
                                         pokemon: pokemon,
-                                        types: viewModel.pokemonTypes[pokemon.id]
+                                        types: viewModel.pokemonTypes[
+                                            pokemon.id
+                                        ]
                                     )
                                     .onAppear {
                                         viewModel.fetchTypes(for: pokemon.id)
@@ -105,8 +111,9 @@ struct ContentView: View {
                             }
 
                             if searchText.isEmpty,
-                               selectedGeneration == nil,
-                               !viewModel.isLoading {
+                                selectedGeneration == nil,
+                                !viewModel.isLoading
+                            {
 
                                 ProgressView()
                                     .padding()

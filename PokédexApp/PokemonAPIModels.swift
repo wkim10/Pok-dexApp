@@ -17,13 +17,15 @@ struct PokemonListResponse: Decodable {
 struct PokemonResult: Decodable, Equatable {
     let name: String
     let url: String
-    
+
     var id: Int {
-        let trimmed = url.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        let trimmed = url.trimmingCharacters(
+            in: CharacterSet(charactersIn: "/")
+        )
         let parts = trimmed.split(separator: "/")
         return Int(parts.last ?? "") ?? 0
     }
-    
+
     static func == (lhs: PokemonResult, rhs: PokemonResult) -> Bool {
         return lhs.url == rhs.url
     }
@@ -61,6 +63,7 @@ struct StatInfo: Decodable {
 
 struct PokemonSpecies: Decodable {
     let flavor_text_entries: [FlavorTextEntry]
+    let varieties: [PokemonVariety]
 }
 
 struct FlavorTextEntry: Decodable {
@@ -70,6 +73,16 @@ struct FlavorTextEntry: Decodable {
 
 struct Language: Decodable {
     let name: String
+}
+
+struct PokemonVariety: Decodable {
+    let is_default: Bool
+    let pokemon: NamedAPIResource
+}
+
+struct NamedAPIResource: Decodable {
+    let name: String
+    let url: String
 }
 
 // MARK: - Type Styling
