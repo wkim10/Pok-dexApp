@@ -91,14 +91,17 @@ struct ContentView: View {
                                 .id("top")
 
                             ForEach(filteredPokemon, id: \.name) { pokemon in
-                                PokemonRowView(
-                                    pokemon: pokemon,
-                                    types: viewModel.pokemonTypes[pokemon.id]
-                                )
-                                .onAppear {
-                                    viewModel.fetchTypes(for: pokemon.id)
+                                NavigationLink(destination: PokemonDetailView(pokemon: pokemon)) {
+                                    PokemonRowView(
+                                        pokemon: pokemon,
+                                        types: viewModel.pokemonTypes[pokemon.id]
+                                    )
+                                    .onAppear {
+                                        viewModel.fetchTypes(for: pokemon.id)
+                                    }
+                                    .padding(.horizontal, 12)
                                 }
-                                .padding(.horizontal, 12)
+                                .buttonStyle(.plain)
                             }
 
                             if searchText.isEmpty,
