@@ -192,13 +192,8 @@ struct PokemonDetailView: View {
 
                             ForEach(details.stats, id: \.stat.name) { stat in
                                 HStack {
-                                    Text(
-                                        stat.stat.name.replacingOccurrences(
-                                            of: "-",
-                                            with: " "
-                                        ).capitalized
-                                    )
-                                    .frame(width: 100, alignment: .leading)
+                                    Text(statLabel(stat.stat.name))
+                                        .frame(width: 90, alignment: .leading)
 
                                     Text("\(stat.base_stat)")
 
@@ -217,7 +212,7 @@ struct PokemonDetailView: View {
 
                             HStack {
                                 Text("Total")
-                                    .frame(width: 100, alignment: .leading)
+                                    .frame(width: 90, alignment: .leading)
                                 Text("\(totalStats)")
                             }
                         }
@@ -301,5 +296,17 @@ struct PokemonDetailView: View {
     func extractID(from url: String) -> Int? {
         let components = url.split(separator: "/")
         return components.last.flatMap { Int($0) }
+    }
+    
+    func statLabel(_ name: String) -> String {
+        switch name {
+        case "special-attack": return "Sp. Atk"
+        case "special-defense": return "Sp. Def"
+        case "attack": return "Atk"
+        case "defense": return "Def"
+        case "speed": return "Speed"
+        case "hp": return "HP"
+        default: return name.capitalized
+        }
     }
 }
