@@ -62,7 +62,7 @@ struct PokemonDetailView: View {
                     }
 
                     // FORMS
-                    if forms.count > 1 {
+                    if forms.count > 0 {
                         VStack(spacing: 10) {
                             Text("Forms")
                                 .font(.headline)
