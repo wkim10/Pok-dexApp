@@ -19,7 +19,6 @@ struct ContentView: View {
             let maxID = viewModel.allPokemon.map { $0.id }.max() ?? 1025
             return 906...maxID
         default:
-            let maxID = viewModel.allPokemon.map { $0.id }.max() ?? 1025
             return 1...1010
         }
     }
@@ -130,13 +129,13 @@ struct ContentView: View {
                     .background(Color(.systemGroupedBackground))
                     .searchable(text: $searchText, prompt: "Search Pokémon")
 
-                    .onChange(of: selectedGeneration) { _ in
+                    .onChange(of: selectedGeneration) {
                         withAnimation {
                             proxy.scrollTo("top", anchor: .top)
                         }
                     }
 
-                    .onChange(of: searchText) { _ in
+                    .onChange(of: searchText) {
                         withAnimation {
                             proxy.scrollTo("top", anchor: .top)
                         }

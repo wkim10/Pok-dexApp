@@ -13,24 +13,6 @@ struct PokemonRowView: View {
     let types: [String]?
 
     var body: some View {
-        let gradientColors: [Color] = {
-            guard let types = types, !types.isEmpty else {
-                return [Color.gray.opacity(0.2), Color.gray.opacity(0.05)]
-            }
-
-            if types.count == 1 {
-                let color = types[0].typeColor()
-                return [color.opacity(0.3), color.opacity(0.05)]
-            } else {
-                let color1 = types[0].typeColor()
-                let color2 = types[1].typeColor()
-                return [
-                    color1.opacity(0.25),
-                    color2.opacity(0.25),
-                ]
-            }
-        }()
-
         HStack(spacing: 15) {
 
             // Image
