@@ -103,7 +103,9 @@ struct ContentView: View {
                                         ]
                                     )
                                     .onAppear {
-                                        viewModel.fetchTypes(for: pokemon.id)
+                                        Task {
+                                            await viewModel.fetchTypes(for: pokemon.id)
+                                        }
                                     }
                                     .padding(.horizontal, 12)
                                 }
@@ -118,7 +120,9 @@ struct ContentView: View {
                                 ProgressView()
                                     .padding()
                                     .onAppear {
-                                        viewModel.fetchPokemon()
+                                        Task {
+                                            await viewModel.fetchPokemon()
+                                        }
                                     }
                             }
                         }
@@ -127,29 +131,27 @@ struct ContentView: View {
                     .searchable(text: $searchText, prompt: "Search Pokémon")
 
                     .onChange(of: selectedGeneration) { _ in
-                        DispatchQueue.main.async {
-                            withAnimation {
-                                proxy.scrollTo("top", anchor: .top)
-                            }
+                        withAnimation {
+                            proxy.scrollTo("top", anchor: .top)
                         }
                     }
 
                     .onChange(of: searchText) { _ in
-                        DispatchQueue.main.async {
-                            withAnimation {
-                                proxy.scrollTo("top", anchor: .top)
-                            }
+                        withAnimation {
+                            proxy.scrollTo("top", anchor: .top)
                         }
                     }
                 }
             }
             .navigationTitle("Pokédex")
             .onAppear {
-                if viewModel.allPokemon.isEmpty {
-                    viewModel.fetchAllPokemon()
-                }
-                if viewModel.pokemon.isEmpty {
-                    viewModel.fetchPokemon()
+                Task {
+                    if viewModel.allPokemon.isEmpty {
+                        await viewModel.fetchAllPokemon()
+                    }
+                    if viewModel.pokemon.isEmpty {
+                        await viewModel.fetchPokemon()
+                    }
                 }
             }
         }

@@ -235,54 +235,39 @@ struct PokemonDetailView: View {
                 .padding(.horizontal)
             }
             .onAppear {
-                fetchDetails()
+                Task {
+                    await fetchDetails()
+                }
             }
         }
     }
 
-    func fetchDetails() {
-        guard
-            let url = URL(
-                string: "https://pokeapi.co/api/v2/pokemon/\(pokemon.id)"
-            )
+    func fetchDetails() async {
+        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon/\(pokemon.id)")
         else { return }
-
-        URLSession.shared.dataTask(with: url) { data, _, _ in
-            if let data = data {
-                if let decoded = try? JSONDecoder().decode(
-                    PokemonDetail.self,
-                    from: data
-                ) {
-                    DispatchQueue.main.async {
-                        self.details = decoded
-                    }
-
-                    fetchSpecies(for: decoded.id)
-                }
-            }
-        }.resume()
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let decoded = try JSONDecoder().decode(PokemonDetail.self, from: data)
+            details = decoded
+            await fetchSpecies(for: decoded.id)
+        } catch {
+            print("fetchDetails error:", error)
+        }
     }
 
-    func fetchSpecies(for id: Int) {
-        guard
-            let url = URL(
-                string: "https://pokeapi.co/api/v2/pokemon-species/\(id)/"
-            )
+    func fetchSpecies(for id: Int) async {
+        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon-species/\(id)/")
         else { return }
-
-        URLSession.shared.dataTask(with: url) { data, _, _ in
-            if let data = data {
-                if let decoded = try? JSONDecoder().decode(
-                    PokemonSpecies.self,
-                    from: data
-                ) {
-                    DispatchQueue.main.async {
-                        self.species = decoded
-                        self.forms = extractForms(from: decoded)
-                    }
-                }
-            }
-        }.resume()
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let decoded = try JSONDecoder().decode(PokemonSpecies.self, from: data)
+            species = decoded
+            forms = extractForms(from: decoded)
+        } catch {
+            print("fetchSpecies error:", error)
+        }
     }
 
     func extractForms(from species: PokemonSpecies) -> [PokemonResult] {
