@@ -6,13 +6,21 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct PokemonDetailView: View {
     let pokemon: PokemonResult
+    
+    @Environment(\.modelContext) private var modelContext
+    @Query private var favorites: [FavoritePokemon]
 
     @State private var details: PokemonDetail?
     @State private var species: PokemonSpecies?
     @State private var forms: [PokemonResult] = []
+    
+    var isFavorited: Bool {
+        favorites.contains { $0.pokemonID == pokemon.id }
+    }
 
     var body: some View {
         ZStack {
@@ -240,8 +248,28 @@ struct PokemonDetailView: View {
                 }
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    toggleFavorites()
+                } label: {
+                    Image(systemName: isFavorited ? "heart.fill" : "heart")
+                        .foregroundColor(isFavorited ? .red : .gray)
+                }
+            }
+        }
+    }
+    
+    func toggleFavorites() {
+        if let existing = favorites.first(where: { $0.pokemonID == pokemon.id }) {
+            modelContext.delete(existing)
+        } else {
+            let favorite = FavoritePokemon(pokemonID: pokemon.id, name: pokemon.name)
+            modelContext.insert(favorite)
+        }
     }
 
+    // fetch pokemon details then species sequentially
     func fetchDetails() async {
         guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon/\(pokemon.id)")
         else { return }
@@ -256,6 +284,7 @@ struct PokemonDetailView: View {
         }
     }
 
+    // fetch species data and extract alternate forms
     func fetchSpecies(for id: Int) async {
         guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon-species/\(id)/")
         else { return }
