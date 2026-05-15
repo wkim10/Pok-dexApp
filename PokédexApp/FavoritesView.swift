@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct FavoritesView: View {
+    @Environment(\.modelContext) private var modelContext
     @Query(sort: \FavoritePokemon.pokemonID) private var favorites: [FavoritePokemon]
     
     var body: some View {
@@ -57,6 +58,11 @@ struct FavoritesView: View {
                                             .foregroundColor(.gray)
                                     }
                                 }
+                            }
+                        }
+                        .onDelete { indexSet in
+                            for index in indexSet {
+                                modelContext.delete(favorites[index])
                             }
                         }
                     }
