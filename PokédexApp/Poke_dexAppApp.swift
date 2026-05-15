@@ -12,7 +12,17 @@ import SwiftData
 struct Poke_dexAppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TabView {
+                ContentView()
+                    .tabItem {
+                        Label("Pokédex", systemImage: "list.bullet")
+                    }
+                
+                FavoritesView()
+                    .tabItem {
+                        Label("Favorites", systemImage: "heart.fill")
+                    }
+            }
         }
         .modelContainer(for: FavoritePokemon.self)
     }
