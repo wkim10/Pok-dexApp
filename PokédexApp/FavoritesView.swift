@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct FavoritesView: View {
-    @Query private var favorites: [FavoritePokemon]
+    @Query(sort: \FavoritePokemon.pokemonID) private var favorites: [FavoritePokemon]
     
     var body: some View {
         NavigationStack {
