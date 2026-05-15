@@ -11,6 +11,7 @@ import SwiftUI
 struct PokemonRowView: View {
     let pokemon: PokemonResult
     let types: [String]?
+    let isFavorited: Bool
 
     var body: some View {
         HStack(spacing: 15) {
@@ -63,6 +64,12 @@ struct PokemonRowView: View {
             }
 
             Spacer()
+            
+            if isFavorited {
+                Image(systemName: "heart.fill")
+                    .foregroundColor(.red)
+                    .font(.system(size: 14))
+            }
         }
         .padding()
         .background(Color.white)

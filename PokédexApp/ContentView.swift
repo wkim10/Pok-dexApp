@@ -1,6 +1,9 @@
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
+    @Query private var favorites: [FavoritePokemon]
+    
     @StateObject var viewModel = PokemonViewModel()
     @State private var searchText = ""
     @State private var selectedGeneration: Int? = nil
@@ -97,9 +100,8 @@ struct ContentView: View {
                                 ) {
                                     PokemonRowView(
                                         pokemon: pokemon,
-                                        types: viewModel.pokemonTypes[
-                                            pokemon.id
-                                        ]
+                                        types: viewModel.pokemonTypes[pokemon.id],
+                                        isFavorited: favorites.contains { $0.pokemonID == pokemon.id }
                                     )
                                     .onAppear {
                                         Task {
