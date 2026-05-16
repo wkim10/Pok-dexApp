@@ -17,11 +17,14 @@ struct PokemonDetailView: View {
     @State private var details: PokemonDetail?
     @State private var species: PokemonSpecies?
     @State private var forms: [PokemonResult] = []
+    @State private var evolutionChain: [NamedAPIResource] = []
+    @State private var branchingStartIndex: Int = -1
+    @State private var secondBranchingStartIndex: Int = -1
     
     var isFavorited: Bool {
         favorites.contains { $0.pokemonID == pokemon.id }
     }
-
+    
     var body: some View {
         ZStack {
             if let primaryTypeColor = details?.types.first?.type.name
@@ -188,6 +191,16 @@ struct PokemonDetailView: View {
                                 .multilineTextAlignment(.center)
                                 .frame(maxWidth: 300)
                         }
+                        
+                        // EVOLUTION CHAIN
+                        if evolutionChain.count > 1 {
+                            EvolutionChainView(
+                                evolutionChain: evolutionChain,
+                                branchingStartIndex: branchingStartIndex,
+                                secondBranchingStartIndex: secondBranchingStartIndex,
+                                currentPokemonName: pokemon.name
+                            )
+                        }
 
                         // STATS
                         VStack(alignment: .leading, spacing: 10) {
@@ -294,6 +307,7 @@ struct PokemonDetailView: View {
             let decoded = try JSONDecoder().decode(PokemonSpecies.self, from: data)
             species = decoded
             forms = extractForms(from: decoded)
+            await fetchEvolutionChain(from: decoded.evolution_chain.url)
         } catch {
             print("fetchSpecies error:", error)
         }
@@ -321,6 +335,21 @@ struct PokemonDetailView: View {
         case "speed": return "Speed"
         case "hp": return "HP"
         default: return name.capitalized
+        }
+    }
+    
+    func fetchEvolutionChain(from urlString: String) async {
+        guard let url = URL(string: urlString) else { return }
+
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let decoded = try JSONDecoder().decode(EvolutionChainResponse.self, from: data)
+            let (chain, branchIdx, secondBranchIdx) = relevantChainWithFlag(decoded.chain, for: pokemon.name)
+            evolutionChain = chain
+            branchingStartIndex = branchIdx
+            secondBranchingStartIndex = secondBranchIdx
+        } catch {
+            print("fetchEvolutionChain error:", error)
         }
     }
 }
