@@ -129,7 +129,11 @@ struct ContentView: View {
                         }
                     }
                     .background(Color(.systemGroupedBackground))
-                    .searchable(text: $searchText, prompt: "Search Pokémon")
+                    .searchable(
+                        text: $searchText,
+                        placement: .navigationBarDrawer(displayMode: .always),
+                        prompt: "Search Pokémon"
+                    )
 
                     .onChange(of: selectedGeneration) {
                         withAnimation {
